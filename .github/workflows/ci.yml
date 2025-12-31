@@ -35,15 +35,16 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push image
+      - name: Build, tag, and push image
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          ECR_REPO: clothing-shipping-service
+          ECR_REPO: clothing-payment-service
           IMAGE_TAG: ${{ github.sha }}
         run: |
           ECR_REGISTRY=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+          echo "Using ECR registry: $ECR_REGISTRY"
+
           docker build -t $ECR_REGISTRY/$ECR_REPO:latest .
-          docker tag $ECR_REGISTRY/$ECR_REPO:latest $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_REPO:latest 
           docker push $ECR_REGISTRY/$ECR_REPO:latest
-          
